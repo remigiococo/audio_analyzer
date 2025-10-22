@@ -73,7 +73,7 @@ class AudioAnalyzer:
             ("Chroma", "chroma"),
             ("Spectral Centroid", "spectral_centroid"),
             ("Zero Crossing Rate", "zcr"),
-            #("Tempo & Beat", "tempo_beat"),
+            ("Tempo & Beat", "tempo_beat"),
             ("Harmonic-Percussive", "harmonic_percussive"),
             ("Onset Detection", "onset_detection"),
             ("Pitch (F0)", "pitch"),
@@ -261,7 +261,7 @@ class AudioAnalyzer:
             return {"data": librosa.feature.zero_crossing_rate(y_segment), "start_sample": start_sample}
             
         elif analysis_type == "tempo_beat":
-            tempo, beats = librosa.beat.beat_track(y=y_segment, sr=sr, onset_envelope=None)
+            tempo, beats = librosa.beat.beat_track(y=y_segment, sr=sr)
             return {"tempo": tempo, "beats": beats, "start_sample": start_sample}
             
         elif analysis_type == "harmonic_percussive":
@@ -315,7 +315,7 @@ class AudioAnalyzer:
             self.ax.set_title('Waveform')
             
             # Setup zoom selector for waveform
-            if self.zoom_enabled.get() and self.span_selector is None:
+            if self.zoom_enabled.get():
                 self.setup_zoom_selector()
             
         elif analysis_type == "spectrogram":
@@ -497,10 +497,6 @@ class AudioAnalyzer:
         # Clear cache
         self.analysis_cache.clear()
         
-        if self.span_selector is not None:
-            #self.span_selector.disconnect_events()
-            self.span_selector.clear()
-
         # Re-analyze full audio
         if self.audio_data is not None:
             self.perform_analysis()
